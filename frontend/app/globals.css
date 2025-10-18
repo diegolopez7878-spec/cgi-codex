@@ -1,0 +1,103 @@
+:root {
+  color-scheme: light;
+  --background: #fdfaf5;
+  --foreground: #1f1f1f;
+  --accent: #1a8917;
+  --accent-muted: rgba(26, 137, 23, 0.12);
+  --border: rgba(0, 0, 0, 0.08);
+  --card-bg: #ffffff;
+  --muted: #6b6b6b;
+  --font-body: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-serif: 'Charter', 'Cambria', 'Times New Roman', serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  padding: 0;
+  margin: 0;
+  font-family: var(--font-body);
+  background: var(--background);
+  color: var(--foreground);
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+p {
+  line-height: 1.7;
+  margin: 0 0 1.4rem;
+}
+
+button {
+  font-family: inherit;
+}
+
+.tag-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.25rem 0.75rem;
+  border-radius: 999px;
+  background: var(--accent-muted);
+  color: var(--accent);
+  font-size: 0.75rem;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
+
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.32);
+  backdrop-filter: blur(3px);
+  display: grid;
+  place-items: center;
+  padding: 1.5rem;
+  z-index: 50;
+}
+
+.modal-panel {
+  background: #fff;
+  border-radius: 1rem;
+  max-width: 640px;
+  width: min(640px, 100%);
+  box-shadow: 0 24px 48px rgba(15, 23, 42, 0.18);
+  padding: 2rem;
+}
+
+.fade-in {
+  animation: fadeIn 200ms ease-out forwards;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes pulse {
+  0% {
+    opacity: 0.6;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0.6;
+  }
+}
