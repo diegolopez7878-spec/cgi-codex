@@ -1,7 +1,35 @@
 const fs = require('fs');
 const path = require('path');
 
-const ARTICLE_REGEX = /^Article\s+([^\.-–—]+?)\s*[\.-–—]\s*(.*)$/i;
+const ARTICLE_NUMBER_SUFFIX =
+  '(?:bis|ter|quater|quinquies|sexies|septies|octies|nonies|decies|undecies|duodecies|terdecies|quaterdecies|quinquiesdecies)';
+
+function extractArticleHeader(line) {
+  if (!/^Article\b/i.test(line)) {
+    return null;
+  }
+  const normalized = line.replace(/^Article\b/i, '').trim();
+  if (!normalized) {
+    return null;
+  }
+
+  const numberMatch = normalized.match(
+    new RegExp(`^([0-9]+(?:\\s*(?:${ARTICLE_NUMBER_SUFFIX}))?)`, 'i')
+  );
+
+  if (!numberMatch) {
+    return null;
+  }
+
+  const number = numberMatch[1].replace(/\s+/g, ' ').trim();
+  let remainder = normalized.slice(numberMatch[0].length);
+  remainder = remainder.replace(/^[\s.\-–—:]+/, '').trim();
+
+  return {
+    number,
+    title: remainder,
+  };
+}
 
 const headingMatchers = [
   { key: 'livre', regex: /^Livre\s+[IVXLC]+/i },
@@ -154,16 +182,14 @@ function parseCGIText() {
       continue;
     }
 
-    const articleMatch = trimmed.match(ARTICLE_REGEX);
-    if (articleMatch && /^Article\b/.test(trimmed)) {
+    const articleMatch = extractArticleHeader(trimmed);
+    if (articleMatch) {
       if (currentArticle) {
         finalizeArticle(currentArticle, context, articles.length, articles);
       }
-      const numberRaw = articleMatch[1].replace(/\s+/g, ' ').trim();
-      const title = articleMatch[2].trim();
       currentArticle = {
-        number: numberRaw,
-        title,
+        number: articleMatch.number,
+        title: articleMatch.title,
         contentLines: [],
         contextSnapshot: { ...context },
       };
@@ -207,9 +233,19 @@ function parseCGIText() {
   return { articles, tags };
 }
 
+function generateUniqueId(baseId, collector) {
+  let uniqueId = baseId;
+  let suffix = 2;
+  while (collector.some((article) => article.id === uniqueId)) {
+    uniqueId = `${baseId}-${suffix++}`;
+  }
+  return uniqueId;
+}
+
 function finalizeArticle(rawArticle, context, order, collector) {
   const content = rawArticle.contentLines.join('\n').replace(/\n{3,}/g, '\n\n').trim();
-  const id = slugify(`article-${rawArticle.number}-${rawArticle.title}`) || `article-${order + 1}`;
+  const baseId = slugify(`article-${rawArticle.number}-${rawArticle.title}`) || `article-${order + 1}`;
+  const id = generateUniqueId(baseId, collector);
   const normalizedSearchText = normalizeText(`${rawArticle.number} ${rawArticle.title} ${content}`);
   const tags = detectTags({ title: rawArticle.title, content }, rawArticle.contextSnapshot);
   const references = extractReferences(content);
