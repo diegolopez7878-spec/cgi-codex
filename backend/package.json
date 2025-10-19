@@ -6,7 +6,10 @@
   "type": "commonjs",
   "scripts": {
     "start": "node src/server.js",
-    "dev": "nodemon src/server.js"
+    "dev": "nodemon src/server.js",
+    "export": "node src/exportData.js",
+    "export:json": "node src/exportData.js --json",
+    "export:sqlite": "node src/exportData.js --sqlite"
   },
   "keywords": [
     "cgi",
@@ -16,6 +19,7 @@
   "author": "",
   "license": "MIT",
   "dependencies": {
+    "better-sqlite3": "^12.4.1",
     "cors": "^2.8.5",
     "express": "^5.1.0",
     "pdfkit": "^0.17.2"

@@ -11,6 +11,23 @@ npm run dev
 
 Le serveur démarre sur `http://localhost:4000`.
 
+## Exporter les données
+
+Le script `src/exportData.js` permet de générer les données des articles au format JSON et/ou dans une base SQLite.
+
+```bash
+# Génère les deux formats dans backend/data
+npm run export
+
+# JSON uniquement
+npm run export:json
+
+# SQLite uniquement
+npm run export:sqlite
+```
+
+Les fichiers sont écrits dans le dossier `backend/data` (ignoré par Git).
+
 ## Endpoints principaux
 
 - `GET /api/articles` : liste paginée avec recherche, tri et filtrage par tag.
