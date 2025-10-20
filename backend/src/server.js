@@ -1,3 +1,4 @@
+const fs = require('fs');
 const express = require('express');
 const cors = require('cors');
 const PDFDocument = require('pdfkit');
@@ -8,6 +9,18 @@ const { normalizeText } = require('./parser');
 const PORT = process.env.PORT || 4000;
 
 const DB_PATH = path.resolve(__dirname, '..', 'data', 'cgi.db');
+
+if (!fs.existsSync(DB_PATH)) {
+  console.log("Base SQLite introuvable, reconstruction en cours...");
+  try {
+    const { buildDatabase } = require('./buildDatabase');
+    buildDatabase();
+  } catch (error) {
+    console.error("Échec de la reconstruction de la base SQLite.", error);
+    process.exit(1);
+  }
+}
+
 let db;
 
 try {

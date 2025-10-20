@@ -143,5 +143,8 @@ function buildDatabase() {
   }
 }
 
-buildDatabase();
+module.exports = { buildDatabase };
 
+if (require.main === module) {
+  buildDatabase();
+}

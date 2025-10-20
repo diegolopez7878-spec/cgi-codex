@@ -5,6 +5,9 @@ yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
 
+# Data files
+backend/data/*.db
+
 # Build outputs
 .next
 out
