@@ -157,11 +157,25 @@ function parseCGIText() {
     sousSection: '',
   };
 
+  let inTableOfContents = false;
+
   const articles = [];
   let currentArticle = null;
 
   for (const line of lines) {
     const trimmed = line.trim();
+
+    if (!inTableOfContents) {
+      const normalizedHeading = stripDiacritics(trimmed).toUpperCase();
+      if (normalizedHeading === 'TABLE DES MATIERES') {
+        inTableOfContents = true;
+        continue;
+      }
+    }
+
+    if (inTableOfContents) {
+      continue;
+    }
 
     if (!trimmed) {
       if (currentArticle) {
